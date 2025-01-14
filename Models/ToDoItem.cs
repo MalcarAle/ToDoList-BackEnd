@@ -1,13 +1,12 @@
-
 namespace ToDoApp.Models;
 
-public class ToDoItem
+public class ToDoItem(int id, string title, string description, bool isCompleted)
 {
-    public int Id { get; set; }
+    public int Id { get; set; } = id;
 
-    public string Title { get; set; } 
+    public string Title { get; set; } = title;
 
-    public string Description { get; set; }
+    public string Description { get; set; } = description;
 
-    public bool IsCompleted { get; set; }
+    public bool IsCompleted { get; set; } = isCompleted;
 }
