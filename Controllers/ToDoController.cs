@@ -4,12 +4,12 @@ using ToDoApp.Models;
 
 namespace ToDoApp.Controllers;
 
-[Route("api/[Controller]")]
+[Route("v1/todos")]
 public class ToDoController(IToDoService toDoService) : ControllerBase
 {
     private readonly IToDoService _toDoService = toDoService;
 
-    [HttpGet]
+    [HttpGet("")]
     public async Task<IActionResult> GetAll()
     {
         var response = await _toDoService.GetAllAsync();
@@ -27,7 +27,7 @@ public class ToDoController(IToDoService toDoService) : ControllerBase
             : NotFound(response.Message);
     }
 
-    [HttpPost]
+    [HttpPost("create")]
     public async Task<IActionResult> Add(ToDoItem item)
     {
         var response = await _toDoService.AddAsync(item);
@@ -36,8 +36,8 @@ public class ToDoController(IToDoService toDoService) : ControllerBase
             : BadRequest(response.Message);
     }
 
-    [HttpPut("{id:int}")]
-    public async Task<IActionResult> Update(int id, ToDoItem item)
+    [HttpPut("update/{id:int}")]
+    public async Task<IActionResult> Update(int id, [FromBody] ToDoItem item)
     {
         var response = await _toDoService.UpdateAsync(id, item);
         return response.IsSuccess
@@ -45,12 +45,12 @@ public class ToDoController(IToDoService toDoService) : ControllerBase
             : BadRequest(response.Message);
     }
 
-    [HttpDelete("{id:int}")]
+    [HttpDelete("delete/{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
         var response = await _toDoService.DeleteAsync(id);
         return response.IsSuccess
-            ? Ok(response.Data)
+            ? Ok(response.Message)
             : NotFound(response.Message);
     }
 }

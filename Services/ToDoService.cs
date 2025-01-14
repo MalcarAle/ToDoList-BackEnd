@@ -8,17 +8,20 @@ namespace ToDoApp.Services;
 
 public class ToDoService(AppDbContext context) : IToDoService
 {
-    public async Task<ResponseBase<IEnumerable<ToDoItem>>> GetAllAsync()
+    public async Task<ResponseBase<List<ToDoItem>>> GetAllAsync()
     {
-        var items = await context.ToDoItems.ToListAsync();
+        var items = await context.ToDoItems.AsNoTracking().ToListAsync();
         return items.Count > 0
-            ? new ResponseBase<IEnumerable<ToDoItem>>(items, true, "Items retrieved successfully")
-            : new ResponseBase<IEnumerable<ToDoItem>>(items, false, "Theres no items to show!");
+            ? new ResponseBase<List<ToDoItem>>(items, true, "Items retrieved successfully")
+            : new ResponseBase<List<ToDoItem>>(items, false, "Theres no items to show!");
     }
 
     public async Task<ResponseBase<ToDoItem>> GetByIdAsync(int id)
     {
-        var item = await context.ToDoItems.FindAsync(id);
+        var item = await context.ToDoItems
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Id == id);
+        
         return item == null
             ? new ResponseBase<ToDoItem>(null, false, "Item was not found!")
             : new ResponseBase<ToDoItem>(item, true, "Item was found");
